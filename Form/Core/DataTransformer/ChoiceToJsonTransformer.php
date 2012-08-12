@@ -34,13 +34,15 @@ class ChoiceToJsonTransformer implements DataTransformerInterface
      * @param string          $widget
      * @param boolean         $multiple
      * @param boolean         $ajax
+     * @param array           $options used only by overriding transformers.
      */
-    public function __construct(ArrayChoiceList $choiceList, $widget = 'choice', $multiple = false, $ajax = false)
+    public function __construct(ArrayChoiceList $choiceList, $widget = 'choice', $multiple = false, $ajax = false, $options)
     {
         $this->choiceList = $choiceList;
         $this->multiple = $multiple;
         $this->widget = $widget;
         $this->ajax = $ajax;
+
     }
 
     /**
@@ -83,10 +85,10 @@ class ChoiceToJsonTransformer implements DataTransformerInterface
             }
 
             foreach ($values as $value) {
-                if (
-                    true === $this->ajax &&
+                if (false === is_array($value['value']) && 
+                    ( true === $this->ajax &&
                     false === in_array($this->widget, array('entity', 'document', 'model'), true)
-                ) {
+                    )) {
                     $choices[$value['value']] = $value['label'];
                 } else {
                     $choices[] = $value['value'];

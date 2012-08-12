@@ -21,6 +21,12 @@ use Genemu\Bundle\FormBundle\Form\Core\DataTransformer\ChoiceToJsonTransformer;
 
 /**
  * @author Olivier Chauvel <olivier@generation-multiple.com>
+ *
+ * @param array options with the following keys:
+ *  choice_list
+ *
+ *
+ *
  */
 class AutocompleterType extends AbstractType
 {
@@ -33,12 +39,14 @@ class AutocompleterType extends AbstractType
             $options['choice_list'] = new AjaxArrayChoiceList($options['choices'], $options['ajax']);
         }
 
+        $klass = $options['data_transformer_class'];
         $builder
-            ->appendClientTransformer(new ChoiceToJsonTransformer(
+            ->appendClientTransformer(new $klass(
                 $options['choice_list'],
                 $options['widget'],
                 $options['multiple'],
-                $options['ajax']
+                $options['ajax'],
+                $options['data_transformer_options']
             ))
             ->setAttribute('choice_list', $options['choice_list'])
             ->setAttribute('widget', $options['widget'])
@@ -80,6 +88,8 @@ class AutocompleterType extends AbstractType
     {
         $defaultOptions = array(
             'widget' => 'choice',
+            'data_transformer_class' => 'Genemu\Bundle\FormBundle\Form\Core\DataTransformer\ChoiceToJsonTransformer',
+            'data_transformer_options' => array(),
             'route_name' => null,
             'ajax' => false,
             'ids' => array(),
